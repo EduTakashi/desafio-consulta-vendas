@@ -10,6 +10,7 @@ import com.devsuperior.dsmeta.dto.ReportDTO;
 import com.devsuperior.dsmeta.dto.SummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.devsuperior.dsmeta.dto.SaleMinDTO;
@@ -28,7 +29,7 @@ public class SaleService {
 		return new SaleMinDTO(entity);
 	}
 
-	public List<ReportDTO> getReport(String minDate, String maxDate, String name) {
+	public Page<ReportDTO> getReport(String minDate, String maxDate, String name, Pageable pageable) {
 		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
 
 		LocalDate max = (maxDate == null || maxDate.isEmpty())
@@ -41,10 +42,10 @@ public class SaleService {
 
 		String sellerName = (name == null) ? "" : name;
 
-		return repository.getReport(min, max, sellerName);
+		return repository.getReport(min, max, sellerName, pageable);
 	}
 
-	public List<SummaryDTO> getSummary(String minDate, String maxDate) {
+	public Page<SummaryDTO> getSummary(String minDate, String maxDate, Pageable pageable) {
 		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
 
 		LocalDate max = (maxDate == null || maxDate.isEmpty())
@@ -55,6 +56,6 @@ public class SaleService {
 				? max.minusYears(1L)
 				: LocalDate.parse(minDate);
 
-		return repository.getSummary(min, max);
+		return repository.getSummary(min, max, pageable);
 	}
 }
